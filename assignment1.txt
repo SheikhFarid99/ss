@@ -1,0 +1,95 @@
+a. Find the names, street address, and cities of residence for all employees who work for
+'Janata Bank' and earn more than TK 10,000.
+
+sql_query : SELECT employee.employee_name, employee.street, employee.city
+FROM employee
+JOIN works ON employee.employee_name = works.employee_name
+WHERE works.company_name = 'RFL' AND works.salary > 1000;
+
+
+b.Find the names of all employees in the database who live in the same cities as the
+companies for which they work.
+
+sql_query : SELECT employee.employee_name
+FROM employee
+JOIN works ON employee.employee_name = works.employee_name
+JOIN company ON works.company_name = company.company_name
+WHERE employee.city = company.city;
+
+
+c. Find the names of all employees in the database who live in the same cities and on the
+same streets as do their managers.
+
+sql_query : SELECT employee.employee_name
+FROM employee
+JOIN manages ON employee.employee_name = manages.employee_name
+JOIN employee as manager ON manages.manager_name = manager.employee_name
+WHERE employee.city = manager.city AND employee.street = manager.street;
+
+
+d.Find the names of all employees in the database who do not work for 'First Bank
+Corporation'. Assume that all people work for exactly one company.
+
+sql_query : SELECT employee.employee_name
+FROM employee
+JOIN works ON employee.employee_name = works.employee_name
+WHERE works.company_name != 'RFL';
+
+
+e. Find the names of all employees in the database who earn more than every employee
+of 'Sonali Bank'. Assume that all people work for at most one company.
+
+sql_query :WITH sonali_employees AS (
+  SELECT employee_name, salary
+  FROM works
+  WHERE company_name = 'Sonali Bank'
+)
+SELECT employee.employee_name
+FROM employee
+JOIN works ON employee.employee_name = works.employee_name
+WHERE works.salary > (SELECT MAX(salary) FROM sonali_employees);
+
+
+f. Assume that the companies may be located in several cities. Find all companies
+located in every city in which 'Sonali Bank' is located.
+
+sql query : WITH sonali_locations AS (
+  SELECT city
+  FROM company
+  WHERE company_name = 'Sonali Bank'
+)
+SELECT company.company_name
+FROM company
+WHERE NOT EXISTS (
+  SELECT *
+  FROM sonali_locations
+  WHERE sonali_locations.city NOT IN (
+    SELECT city
+    FROM company
+  )
+);
+
+g. Find the names of all employees who earn more than the average salary of all
+employees of their company. Assume that all people work for at most one company.
+
+sql query : WITH company_salaries AS (
+  SELECT company_name, AVG(salary) as avg_salary
+  FROM works
+  GROUP BY company_name
+),
+SELECT employee.employee_name
+FROM employee
+JOIN works ON employee.employee_name = works.employee_name
+JOIN company_salaries ON works.company_name = company_salaries.company_name
+WHERE works.salary > company_salaries.avg_salary;
+
+h. Find the name of the company that has the smallest payroll.
+
+sql query : WITH company_payrolls AS (
+  SELECT company_name, SUM(salary) as total_salary
+  FROM works
+  GROUP BY company_name
+),
+SELECT company_payrolls.company_name
+FROM company_payrolls
+WHERE total_salary = (SELECT MIN(total_salary) FROM company_payrolls);

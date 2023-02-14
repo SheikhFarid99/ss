@@ -1,0 +1,54 @@
+a. SQL code to create the table book:
+sql query : CREATE TABLE book (
+  book_name varchar(50) NOT NULL,
+  author varchar(50) NOT NULL,
+  price decimal(10, 2) NOT NULL,
+  quantity int NOT NULL
+);
+
+b. SQL code to create the table customer:
+
+sql : CREATE TABLE customer (
+  Cust_id int NOT NULL PRIMARY KEY,
+  Cust_name varchar(50) NOT NULL,
+  Addr varchar(100) NOT NULL,
+  ph_no varchar(15) NOT NULL,
+  pan_no varchar(10) NOT NULL
+);
+
+
+(i) Truncate the table customer:
+
+sql : TRUNCATE TABLE customer;
+
+(ii) List the author of the book which has a price of 200:
+
+sql : SELECT author
+FROM book
+WHERE price = 200;
+
+(iii) List the price of the book which is between the price of 175 & 250:
+
+sql : SELECT price
+FROM book
+WHERE price BETWEEN 175 AND 250;
+
+(iv) Retrieve all the details from the table book whose author name starts with K:
+sql : SELECT *
+FROM book
+WHERE author LIKE 'K%';
+
+
+a. SQL code to create the table stu_details:
+
+sql : SELECT stu_name
+FROM stu_details;
+
+(ii) List all the student details who are located in Chennai:
+sql : SELECT *
+FROM stu_details
+WHERE city = 'Chennai';
+
+(iii) Drop the table mark_details:
+
+DROP TABLE mark_details;
